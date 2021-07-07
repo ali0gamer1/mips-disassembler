@@ -1,17 +1,17 @@
 #define SWAP_INT32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) | (((x) & 0x0000FF00) << 8) | ((x) << 24))
+#include<math.h>
 
-
-uint_fast32_t getnbits(uint_fast32_t num, unsigned char n, unsigned char p)
+uint_fast32_t getnbits(uint_fast32_t num, unsigned char p, unsigned char n)
 {
     uint_fast32_t mask ;
 
-    mask = ~(~0U << p) >> (p  - n);
+    mask = ~(~0U << n) << (p  - n);
 
 
 
 
 
-    return mask & num;
+    return (mask & num) >>(p-n);
 }
 
 
