@@ -4,6 +4,65 @@
 #include "utilsme.h"
 
 
+void detect_register(char _r1[], char r1)
+{
+            if (r1 == 3 || r1 == 2){
+                _r1[0] = 'v';
+                _r1[1] = (r1-2) + '0';
+            }else
+
+
+            if (r1 <= 7 && r1 >= 4){
+                _r1[0] = 'a';
+                _r1[1] = (r1-4) + '0';
+
+            }else
+
+            if (r1 <= 15 && r1 >= 8){
+
+                _r1[0] = 't';
+                _r1[1] = (r1-8) + '0';
+
+            }else
+
+            if (r1 <= 23 && r1 >= 16){
+
+                _r1[0] = 's';
+                _r1[1] = (r1-16) + '0';
+
+            }else
+
+            if (r1 == 24 || r1 == 25){
+                _r1[0] = 't';
+                _r1[1] = (r1-16) + '0';
+
+            }else
+
+            if (r1 == 26 || r1 == 27){
+                _r1[0] = 'k';
+                _r1[1] = (r1-26) + '0';
+
+            }else
+
+
+            if (r1 == 28)
+                strcpy(_r1, "gp");
+            else
+
+            if (r1 == 29)
+                strcpy(_r1, "sp");
+            else
+
+            if (r1 == 30)
+                strcpy(_r1, "fp");
+            else
+
+            if (r1 == 31)
+                strcpy(_r1, "ra");
+
+
+
+}
 
 
 int main(void)
@@ -16,7 +75,13 @@ int main(void)
 
     fptr = fopen("/home/ali/Downloads/lua","rb");
     char flag =0;
-    int tt = 0, counter = 0;
+    int tt = 0x400000, counter = 0;
+
+    char r1,r2,r3;
+
+
+    char _r1[4] = {0}, _r2[4] = {0}, _r3[4] = {0};
+
     while(1)
     {
         if (fread(&x,1, 4, fptr) == 0)
@@ -30,16 +95,36 @@ int main(void)
 
 
 
-
         if (getnbits(x,32,6) == 0 && getnbits(x,6,6) == 0b100001){
 
-            if (x == 0x0399e021)
-                flag = 1;
+
+
+            r3 = getnbits(x,16,5);
+            r2 = getnbits(x,21,5);
+            r1 = getnbits(x,26,5);
+
+
+            detect_register(_r1,r1);
+            detect_register(_r2,r2);
+            detect_register(_r3,r3);
 
 
 
-            if (flag){
 
+
+            printf("%x:\t",tt-4);
+
+            printf("%s ", "addu");
+
+            printf("%s,", _r3);
+            printf("%s,", _r1);
+            printf("%s\n", _r2);
+
+
+
+
+
+            /*
             printf("\n--- %x ---\n",tt-4);
 
             printf("%s\t%x\n",getstrbits(x,32,32),x);
@@ -49,11 +134,12 @@ int main(void)
             printf("%s\t%x\n",getstrbits(x,16,5),getnbits(x,16,5));
             printf("%s\t%x\n",getstrbits(x,21,5),getnbits(x,21,5));
             printf("%s\t%x\n",getstrbits(x,26,5),getnbits(x,26,5));
-            printf("%s\t%x\n",getstrbits(x,32,6),getnbits(x,32,6));
-            getchar();
+            printf("%s\t%x\n",getstrbits(x,32,6),getnbits(x,32,6));*/
             counter++;
-            }
+
         }
+
+
 
 
 
