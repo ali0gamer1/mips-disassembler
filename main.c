@@ -9,6 +9,17 @@ unsigned int address = 0x400000;
 
 void detect_register(char _r1[], char *r1)
 {
+            if (*r1 == 0)
+            {
+                _r1[0] = '$';
+                _r1[1] = '0';
+            }else
+
+            if(*r1 == 1)
+            {
+                _r1[0] = 'a';
+                _r1[1] = 't';
+            }else
 
             if (*r1 == 3 || *r1 == 2){ //v0 v1
                 _r1[0] = 'v';
@@ -84,6 +95,244 @@ char detect_instruction(unsigned char bits)
 }
 
 
+void parse_i(uint_fast32_t x)
+{
+
+    char r1, r2, imm, opcode;
+
+    char _r1[6] = {0}, _r2[6] = {0};
+
+
+    imm = getnbits(x,16,16); //immediate
+    r2 = getnbits(x,21,5);  //rt
+    r1 = getnbits(x,26,5);  //rs
+    opcode = getnbits(x,32,6);
+
+    detect_register(_r1,&r1);
+    detect_register(_r2,&r2);
+
+
+
+    if (opcode == 1 && r2 == 0)
+    {
+        if (r1 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("bltz\t%s, %x\n",_r1,imm);
+    }else
+
+    if (opcode == 1 && r2 == 1)
+    {
+        if (r1 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("bgez\t%s, %x\n",_r1,imm);
+    }else
+
+    if (opcode == 0x4)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("beq\t%s, %s, %x\n", _r1, _r2, ((address) << 32 ) + (imm<<2)   );
+    }else
+
+    if (opcode == 0x5)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("bne\t%s, %s, %x\n", _r1, _r2, ((address) << 32 ) + (imm<<2)   );
+    }else
+
+    if (opcode == 0x6 && r2 == 0)
+    {
+        if (r1 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("blez\t%s, %x\n", _r1, ((address) << 32 ) + (imm<<2));
+    }else
+
+    if (opcode == 0x7 && r2 == 0)
+    {
+        if (r1 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("bgtz\t%s, %x\n", _r1, ((address) << 32 ) + (imm<<2));
+    }else
+
+    if (opcode == 0x8)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("addi\t%s, %s, %x\n", _r2, _r1, imm);
+    }else
+
+    if (opcode == 0x9)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("addiu\t%s, %s, %x\n", _r2, _r1, imm);
+    }
+
+    if (opcode == 0xa)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("slti\t%s, %s, %x\n", _r2, _r1, imm);
+    }else
+
+    if (opcode == 0xb)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("sltiu\t%s, %s, %x\n", _r2, _r1, imm);
+    }else
+
+    if (opcode == 0xc)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("andi\t%s, %s, %x\n", _r2, _r1, imm);
+    }else
+
+    if (opcode == 0xd)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("ori\t%s, %s, %x\n", _r2, _r1, imm);
+    }else
+
+    if (opcode == 0xe)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("xori\t%s, %s, %x\n", _r2, _r1, imm);
+    }else
+
+    if (opcode == 0xf)
+    {
+        if (r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("lui\t%s, %x\n", _r2, imm);
+    }else
+
+    if (opcode == 0x20)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("lb\t%s, %x(%s)\n", _r2, imm, _r1);
+    }else
+
+    if (opcode == 0x21)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("lh\t%s, %x(%s)\n", _r2, imm, _r1);
+    }else
+
+    if (opcode == 0x23)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("lw\t%s, %x(%s)\n", _r2, imm, _r1);
+    }else
+
+    if (opcode == 0x24)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("lbu\t%s, %x(%s)\n", _r2, imm, _r1);
+    }else
+
+    if (opcode == 0x25)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("lhu\t%s, %x(%s)\n", _r2, imm, _r1);
+    }else
+
+    if (opcode == 0x28)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("sb\t%s, %x(%s)\n", _r2, imm, _r1);
+    }else
+
+    if (opcode == 0x29)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("sh\t%s, %x(%s)\n", _r2, imm, _r1);
+    }else
+
+    if (opcode == 0x2b)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("sw\t%s, %x(%s)\n", _r2, imm, _r1);
+    }else
+
+    if (opcode == 0x31)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("lwc1\t%s, %x(%s)\n", _r2, imm, _r1);
+    }else
+
+    if (opcode == 0x39)
+    {
+        if (r1 == -1 || r2 == -1)
+            return 0;
+
+        PRINT_ADDRESS("\t");
+        printf("swcl\t%s, %x(%s)\n", _r2, imm, _r1);
+    }
+
+
+}
+
+
 void parse_r(uint_fast32_t x)
 {
     unsigned char func = getnbits(x,6,6);
@@ -108,7 +357,7 @@ void parse_r(uint_fast32_t x)
    {
        if ( r2 == -1 || r3 == -1) //check if invalid register
             return;
-        PRINT_ADDRESS("\t");
+       PRINT_ADDRESS("\t");
        printf("sll\t%s, %s, 0x%x\n", _r3, _r2, sa);
    }
 
@@ -174,6 +423,182 @@ void parse_r(uint_fast32_t x)
        printf("jalr\t%s, %s\n", _r3, _r1);
    }
 
+   if (func == 0xc) //sll
+   {
+       PRINT_ADDRESS("\t");
+       printf("syscall\n");
+   }
+
+   if (func == 0xd) //sll
+   {
+       PRINT_ADDRESS("\t");
+       printf("break\n");
+   }
+
+   if (func == 0x10) //sll
+   {
+       if (r3 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("mfhi\t%s\n", _r3);
+   }
+
+   if (func == 0x11) //sll
+   {
+       if (r1 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("mthi\t%s\n", _r1);
+   }
+
+   if (func == 0x12) //sll
+   {
+       if (r3 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("mflo\t%s\n", _r3);
+   }
+
+   if (func == 0x13) //sll
+   {
+       if (r1 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("mtlo\t%s\n", _r1);
+   }
+
+   if (func == 0x18) //sll
+   {
+       if (r1 == -1 || r2 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("mult\t%s, %s\n", _r1, _r2);
+   }
+
+   if (func == 0x19) //sll
+   {
+       if (r1 == -1 || r2 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("multu\t%s, %s\n", _r1, _r2);
+   }
+
+   if (func == 0x1a) //sll
+   {
+       if (r1 == -1 || r2 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("div\t%s, %s\n", _r1, _r2);
+   }
+
+   if (func == 0x1b) //sll
+   {
+       if (r1 == -1 || r2 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("divu\t%s, %s\n", _r1, _r2);
+   }
+
+   if (func == 0x20) //sll
+   {
+       if (r1 == -1 || r2 == -1 || r3 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("add\t%s, %s, %s\n", _r3 , _r1, _r2);
+   }
+
+   if (func == 0x21) //sll
+   {
+       if (r1 == -1 || r2 == -1 || r3 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("addu\t%s, %s, %s\n", _r3 , _r1, _r2);
+   }
+
+   if (func == 0x22) //sll
+   {
+       if (r1 == -1 || r2 == -1 || r3 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("sub\t%s, %s, %s\n", _r3 , _r1, _r2);
+   }
+
+   if (func == 0x23) //sll
+   {
+       if (r1 == -1 || r2 == -1 || r3 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("subu\t%s, %s, %s\n", _r3 , _r1, _r2);
+   }
+
+   if (func == 0x24) //sll
+   {
+       if (r1 == -1 || r2 == -1 || r3 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("and\t%s, %s, %s\n", _r3 , _r1, _r2);
+   }
+
+   if (func == 0x25) //sll
+   {
+       if (r1 == -1 || r2 == -1 || r3 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("or\t%s, %s, %s\n", _r3 , _r1, _r2);
+   }
+
+   if (func == 0x26) //sll
+   {
+       if (r1 == -1 || r2 == -1 || r3 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("xor\t%s, %s, %s\n", _r3 , _r1, _r2);
+   }
+
+   if (func == 0x27) //sll
+   {
+       if (r1 == -1 || r2 == -1 || r3 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("nor\t%s, %s, %s\n", _r3 , _r1, _r2);
+   }
+
+   if (func == 0x2a) //sll
+   {
+       if (r1 == -1 || r2 == -1 || r3 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("slt\t%s, %s, %s\n", _r3 , _r1, _r2);
+   }
+
+   if (func == 0x2b) //sll
+   {
+       if (r1 == -1 || r2 == -1 || r3 == -1) //check if invalid register
+            return;
+
+       PRINT_ADDRESS("\t");
+       printf("sltu\t%s, %s, %s\n", _r3 , _r1, _r2);
+   }
+
+
+
 
 
 
@@ -186,11 +611,10 @@ int main(void)
 
     uint_fast32_t x;
 
-
+    int counter = 0;
     FILE *fptr;
 
-    fptr = fopen("/home/ali/Downloads/lua","rb");
-
+    fptr = fopen("/home/ali/Downloads/lsof","rb");
 
 
 
@@ -198,18 +622,36 @@ int main(void)
 
     while(1)
     {
-        if (fread(&x,1, 4, fptr) == 0)
+        if (fread(&x,4, 1, fptr) == 0)
             break;
 
         address+=4;
 
 
 
+
         if (getnbits(x,32,6) == 0)
         {
             parse_r(x);
+        }else
 
-        }
+        if (getnbits(x,32,6) == 2)
+        {
+            PRINT_ADDRESS("\t");
+            printf("j\t%x\n",getnbits(x,26,26));
+        }else
+
+        if (getnbits(x,32,6) == 3)
+        {
+            PRINT_ADDRESS("\t");
+            printf("jal \t%x\n",getnbits(x,26,26));
+        }else
+        if (getnbits(x,32,6) == 0b010001 || getnbits(x,32,6) == 0b010000 || getnbits(x,32,6) == 0b010010 || getnbits(x,32,6) == 0b010011)
+        {
+            //parse_cop(x);
+        }else
+            parse_i(x);
+
 
         /*if (getnbits(x,32,6) == 0 && getnbits(x,6,6) == 0b100001){
 
