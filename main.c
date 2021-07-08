@@ -98,7 +98,9 @@ char detect_instruction(unsigned char bits)
 void parse_i(uint_fast32_t x)
 {
 
-    char r1, r2, imm, opcode;
+    char r1, r2, imm;
+
+    unsigned char opcode;
 
     char _r1[6] = {0}, _r2[6] = {0};
 
@@ -599,6 +601,61 @@ void parse_r(uint_fast32_t x)
 
 
 
+}
+
+
+void parse_cop(uint_fast32_t x)
+{
+    unsigned char opcode, func, format;
+
+    char r1, r2, r3;
+
+    char _r1[4] = {0}, _r2[4] = {0}, _r3[4] = {0};
+
+    format = getnbits(x,26,5);
+    opcode = getnbits(x,32,6);
+    func = getnbits(x,6,6);
+
+    r1 = getnbits(x,11,5); //fd
+    r2 = getnbits(x,16,5); //fs
+    r3 = getnbits(x,21,5); //ft
+
+
+
+    detect_register(_r1,&r1);
+    detect_register(_r2,&r2);
+    detect_register(_r3,&r3);
+
+
+
+
+
+
+
+
+
+    if (opcode == 0x11)
+    {
+        if (func == 0)
+        {
+            if (r1 == -1 || r2 == -1 || r3 == -1)
+                return;
+
+            printf("adds\t%s, %s, %s", _r1, _r2, _r3);
+        }
+
+        if (func == 0x20)
+        {
+            if (r1 == -1 || r2 == -1)
+                return;
+
+            printf("cvt.s.w\t%s, %s, %s",'s', _r1, _r2);
+        }
+
+
+
+
+    }
 
 
 
@@ -648,7 +705,7 @@ int main(void)
         }else
         if (getnbits(x,32,6) == 0b010001 || getnbits(x,32,6) == 0b010000 || getnbits(x,32,6) == 0b010010 || getnbits(x,32,6) == 0b010011)
         {
-            //parse_cop(x);
+            parse_cop(x);
         }else
             parse_i(x);
 
