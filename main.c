@@ -98,7 +98,8 @@ char detect_instruction(unsigned char bits)
 void parse_i(uint_fast32_t x)
 {
 
-    char r1, r2, imm;
+    char r1, r2;
+    int16_t  imm;
 
     unsigned char opcode;
 
@@ -266,6 +267,7 @@ void parse_i(uint_fast32_t x)
 
         PRINT_ADDRESS("\t");
         printf("lw\t%s, %x(%s)\n", _r2, imm, _r1);
+        printf("%s\n",getstrbits(x,16,16));
     }else
 
     if (opcode == 0x24)
@@ -570,6 +572,7 @@ void parse_r(uint_fast32_t x)
 
        PRINT_ADDRESS("\t");
        printf("xor\t%s, %s, %s\n", _r3 , _r1, _r2);
+
    }
 
    if (func == 0x27) //sll
@@ -649,7 +652,7 @@ void parse_cop(uint_fast32_t x)
             if (r1 == -1 || r2 == -1)
                 return;
 
-            printf("cvt.s.w\t%s, %s, %s",'s', _r1, _r2);
+            printf("cvt.s.w\t%s, %s", _r1, _r2);
         }
 
 
@@ -660,6 +663,7 @@ void parse_cop(uint_fast32_t x)
 
 
 }
+
 
 
 
@@ -676,10 +680,9 @@ int main(void)
 
 
 
-
     while(1)
     {
-        if (fread(&x,4, 1, fptr) == 0)
+        if (fread(&x,1, 4, fptr) == 0)
             break;
 
         address+=4;
@@ -710,47 +713,8 @@ int main(void)
             parse_i(x);
 
 
-        /*if (getnbits(x,32,6) == 0 && getnbits(x,6,6) == 0b100001){
-
-
-
-            r3 = getnbits(x,16,5);
-            r2 = getnbits(x,21,5);
-            r1 = getnbits(x,26,5);
-
-
-
-            detect_register(_r1,r1);
-            detect_register(_r2,r2);
-            detect_register(_r3,r3);
-
-
-
-
-
-            printf("%x:\t",address-4);
-
-            printf("%s ", "addu");
-
-            printf("%s,", _r3);
-            printf("%s,", _r1);
-            printf("%s\n", _r2);
-
-
-            /*
-            printf("%s\t%x\n",getstrbits(x,6,6),getnbits(x,6,6));
-            printf("%s\t%x\n",getstrbits(x,11,5),getnbits(x,11,5));
-            printf("%s\t%x\n",getstrbits(x,16,5),getnbits(x,16,5));
-            printf("%s\t%x\n",getstrbits(x,21,5),getnbits(x,21,5));
-            printf("%s\t%x\n",getstrbits(x,26,5),getnbits(x,26,5));
-            printf("%s\t%x\n",getstrbits(x,32,6),getnbits(x,32,6));
-            *//*
-
-
-        }
-        */
-
-
+        if (address % 500 == 0)
+            getchar();
 
 
 
