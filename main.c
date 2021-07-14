@@ -30,54 +30,43 @@ void detect_register(char _r1[], char *r1)
             if (*r1 <= 7 && *r1 >= 4){ // a0-a3
                 _r1[0] = 'a';
                 _r1[1] = (*r1-4) + '0';
-
             }else
 
             if (*r1 <= 15 && *r1 >= 8){ //t0-t7
 
                 _r1[0] = 't';
                 _r1[1] = (*r1-8) + '0';
-
             }else
 
             if (*r1 <= 23 && *r1 >= 16){ //s0-s7
 
                 _r1[0] = 's';
                 _r1[1] = (*r1-16) + '0';
-
             }else
 
             if (*r1 == 24 || *r1 == 25){ //t8 t9
                 _r1[0] = 't';
                 _r1[1] = (*r1-16) + '0';
-
             }else
 
             if (*r1 == 26 || *r1 == 27){ //k0 k1
                 _r1[0] = 'k';
                 _r1[1] = (*r1-26) + '0';
-
             }else
-
 
             if (*r1 == 28)
                 strcpy(_r1, "gp");
             else
-
             if (*r1 == 29)
                 strcpy(_r1, "sp");
             else
-
             if (*r1 == 30)
                 strcpy(_r1, "fp");
             else
-
             if (*r1 == 31)
                 strcpy(_r1, "ra");
-
             else
                 *r1 = -1;
-
 }
 
 
@@ -85,11 +74,9 @@ char detect_instruction(unsigned char bits)
 {
     if (bits == 0)
         return 0;
-
     else
     if (bits == 0b11 || bits ==0b10)
         return 2;
-
 
     return 1;
 }
@@ -97,7 +84,6 @@ char detect_instruction(unsigned char bits)
 
 void parse_i(uint_fast32_t x)
 {
-
     char r1, r2;
     int16_t  imm;
 
@@ -105,107 +91,83 @@ void parse_i(uint_fast32_t x)
 
     char _r1[6] = {0}, _r2[6] = {0};
 
-
     imm = getnbits(x,16,16); //immediate
     r2 = getnbits(x,21,5);  //rt
     r1 = getnbits(x,26,5);  //rs
     opcode = getnbits(x,32,6);
-
     detect_register(_r1,&r1);
     detect_register(_r2,&r2);
-
-
 
     if (opcode == 1 && r2 == 0)
     {
         if (r1 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("bltz\t%s, %x\n",_r1,imm);
     }else
-
     if (opcode == 1 && r2 == 1)
     {
         if (r1 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("bgez\t%s, %x\n",_r1,imm);
     }else
-
     if (opcode == 0x4)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("beq\t%s, %s, %x\n", _r1, _r2, ((address) << 32 ) + (imm<<2)   );
     }else
-
     if (opcode == 0x5)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("bne\t%s, %s, %x\n", _r1, _r2, ((address) << 32 ) + (imm<<2)   );
     }else
-
     if (opcode == 0x6 && r2 == 0)
     {
         if (r1 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("blez\t%s, %x\n", _r1, ((address) << 32 ) + (imm<<2));
     }else
-
     if (opcode == 0x7 && r2 == 0)
     {
         if (r1 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("bgtz\t%s, %x\n", _r1, ((address) << 32 ) + (imm<<2));
     }else
-
     if (opcode == 0x8)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("addi\t%s, %s, %x\n", _r2, _r1, imm);
     }else
-
     if (opcode == 0x9)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("addiu\t%s, %s, %x\n", _r2, _r1, imm);
     }
-
     if (opcode == 0xa)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("slti\t%s, %s, %x\n", _r2, _r1, imm);
     }else
-
     if (opcode == 0xb)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("sltiu\t%s, %s, %x\n", _r2, _r1, imm);
     }else
-
     if (opcode == 0xc)
     {
         if (r1 == -1 || r2 == -1)
@@ -214,7 +176,6 @@ void parse_i(uint_fast32_t x)
         PRINT_ADDRESS("\t");
         printf("andi\t%s, %s, %x\n", _r2, _r1, imm);
     }else
-
     if (opcode == 0xd)
     {
         if (r1 == -1 || r2 == -1)
@@ -228,80 +189,63 @@ void parse_i(uint_fast32_t x)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("xori\t%s, %s, %x\n", _r2, _r1, imm);
     }else
-
     if (opcode == 0xf)
     {
         if (r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("lui\t%s, %x\n", _r2, imm);
     }else
-
     if (opcode == 0x20)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("lb\t%s, %x(%s)\n", _r2, imm, _r1);
     }else
-
     if (opcode == 0x21)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("lh\t%s, %x(%s)\n", _r2, imm, _r1);
     }else
-
     if (opcode == 0x23)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("lw\t%s, %x(%s)\n", _r2, imm, _r1);
         printf("%s\n",getstrbits(x,16,16));
     }else
-
     if (opcode == 0x24)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("lbu\t%s, %x(%s)\n", _r2, imm, _r1);
     }else
-
     if (opcode == 0x25)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("lhu\t%s, %x(%s)\n", _r2, imm, _r1);
     }else
-
     if (opcode == 0x28)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("sb\t%s, %x(%s)\n", _r2, imm, _r1);
     }else
-
     if (opcode == 0x29)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("sh\t%s, %x(%s)\n", _r2, imm, _r1);
     }else
@@ -310,52 +254,39 @@ void parse_i(uint_fast32_t x)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("sw\t%s, %x(%s)\n", _r2, imm, _r1);
     }else
-
     if (opcode == 0x31)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("lwc1\t%s, %x(%s)\n", _r2, imm, _r1);
     }else
-
     if (opcode == 0x39)
     {
         if (r1 == -1 || r2 == -1)
             return 0;
-
         PRINT_ADDRESS("\t");
         printf("swcl\t%s, %x(%s)\n", _r2, imm, _r1);
     }
-
-
 }
 
 
 void parse_r(uint_fast32_t x)
 {
     unsigned char func = getnbits(x,6,6);
-
     char r1, r2, r3, sa;
-
     char _r1[4] = {0}, _r2[4] = {0}, _r3[4] = {0};
-
 
     sa = getnbits(x,11,5); //shift amount
     r3 = getnbits(x,16,5); //rd
     r2 = getnbits(x,21,5); //rt
     r1 = getnbits(x,26,5); //rs
-
     detect_register(_r1,&r1);
     detect_register(_r2,&r2);
     detect_register(_r3,&r3);
-
-
 
    if (func == 0) //sll
    {
@@ -601,9 +532,6 @@ void parse_r(uint_fast32_t x)
        PRINT_ADDRESS("\t");
        printf("sltu\t%s, %s, %s\n", _r3 , _r1, _r2);
    }
-
-
-
 }
 
 
@@ -618,24 +546,12 @@ void parse_cop(uint_fast32_t x)
     format = getnbits(x,26,5);
     opcode = getnbits(x,32,6);
     func = getnbits(x,6,6);
-
     r1 = getnbits(x,11,5); //fd
     r2 = getnbits(x,16,5); //fs
     r3 = getnbits(x,21,5); //ft
-
-
-
     detect_register(_r1,&r1);
     detect_register(_r2,&r2);
     detect_register(_r3,&r3);
-
-
-
-
-
-
-
-
 
     if (opcode == 0x11)
     {
@@ -646,30 +562,19 @@ void parse_cop(uint_fast32_t x)
 
             printf("adds\t%s, %s, %s", _r1, _r2, _r3);
         }
-
         if (func == 0x20)
         {
             if (r1 == -1 || r2 == -1)
                 return;
-
             printf("cvt.s.w\t%s, %s", _r1, _r2);
         }
-
-
-
-
     }
-
-
-
 }
-
 
 
 
 int main(void)
 {
-
     uint_fast32_t x;
 
     int counter = 0;
@@ -677,18 +582,11 @@ int main(void)
 
     fptr = fopen("/home/ali/Downloads/lsof","rb");
 
-
-
-
     while(1)
     {
         if (fread(&x,1, 4, fptr) == 0)
             break;
-
         address+=4;
-
-
-
 
         if (getnbits(x,32,6) == 0)
         {
@@ -712,18 +610,9 @@ int main(void)
         }else
             parse_i(x);
 
-
         if (address % 500 == 0)
-            getchar();
-
-
-
-
-
-
-    }
+           {}
+   }
     fclose(fptr);
     return 0;
 }
-
-
